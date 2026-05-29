@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hero Baik Hati - Kuiz Interaktif Pendidikan Moral Tahun 3</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts for Playful Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+    }
+    .font-playful {
+      font-family: 'Fredoka', sans-serif;
+    }
+    /* Custom animations */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+    }
+    @keyframes pulse-slow {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-float {
+      animation: float 4s ease-in-out infinite;
+    }
+    .animate-pulse-slow {
+      animation: pulse-slow 3s ease-in-out infinite;
+    }
+    .animate-spin-slow {
+      animation: spin-slow 15s linear infinite;
+    }
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      opacity: 0.8;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-[#E2F1F8] via-[#FFF9E6] to-[#E8F5E9] min-h-screen flex items-center justify-center p-4 relative overflow-hidden select-none">
+
+  <!-- Floating Background Elements for Premium Kid-Friendly Look -->
+  <div class="absolute top-10 left-10 text-pink-300 opacity-40 animate-float" style="animation-delay: 0s;">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z"/></svg>
+  </div>
+  <div class="absolute bottom-10 right-10 text-yellow-300 opacity-40 animate-float" style="animation-delay: 1.5s;">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.4 8.168L12 18.896l-7.334 3.857 1.4-8.168L.132 9.21l8.2-1.192z"/></svg>
+  </div>
+  <div class="absolute top-1/4 right-8 text-blue-300 opacity-30 animate-float" style="animation-delay: 2.5s;">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-14 w-14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L1 21h22L12 2zm0 4l7.5 13h-15L12 6z"/></svg>
+  </div>
+  <div class="absolute bottom-1/4 left-8 text-emerald-300 opacity-30 animate-float" style="animation-delay: 0.8s;">
+    <!-- School Bus / Building outline style -->
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+  </div>
+
+  <!-- Main Game Container -->
+  <main id="game-card" class="bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl border-4 border-[#FFDF80] w-full max-w-2xl overflow-hidden transition-all duration-500 transform relative z-10">
+    
+    <!-- Top Progress Bar & Score Board (Hidden in Intro and Outro) -->
+    <div id="game-header" class="hidden bg-[#FFF9E6] border-b-4 border-[#FFDF80] p-4 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <span class="text-3xl">🎒</span>
+        <div>
+          <div class="text-xs font-bold text-gray-500 tracking-wider">SOALAN</div>
+          <div class="text-lg font-bold font-playful text-[#4A90E2]"><span id="current-question-num">1</span> / 5</div>
+        </div>
+      </div>
+      
+      <!-- Center Progress Bar -->
+      <div class="flex-1 mx-4 max-w-xs">
+        <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden border border-gray-300">
+          <div id="progress-bar-fill" class="bg-gradient-to-r from-emerald-400 to-green-500 h-full transition-all duration-300" style="width: 20%;"></div>
+        </div>
+      </div>
+
+      <!-- Hearts / Score -->
+      <div class="flex items-center gap-2 bg-pink-100 px-3 py-1.5 rounded-full border border-pink-200">
+        <span class="text-xl animate-pulse">❤️</span>
+        <span id="score-counter" class="font-playful font-bold text-pink-600 text-lg">00</span>
+      </div>
+    </div>
+
+    <!-- MAIN SCENE CONTAINER -->
+    <div class="p-6 md:p-8 flex flex-col items-center justify-between min-h-[460px]">
+      
+      <!-- 1. INTRO / START SLIDE -->
+      <div id="slide-intro" class="flex flex-col items-center text-center py-6 w-full space-y-6">
+        <!-- Badge -->
+        <span class="bg-[#E8F5E9] text-[#2E7D32] px-4 py-1.5 rounded-full text-sm font-bold border-2 border-[#A5D6A7] uppercase tracking-wide">
+          Pendidikan Moral Tahun 3
+        </span>
+
+        <!-- Title & 3D Character Illustration -->
+        <div class="relative py-2">
+          <h1 class="text-4xl md:text-5xl font-playful font-black text-[#FF6F61] drop-shadow-sm tracking-wide">
+            🎮 HERO BAIK HATI
+          </h1>
+          <p class="text-lg font-bold text-[#4A90E2] mt-1">Pilih Tindakan Terbaik di Sekolah!</p>
+        </div>
+
+        <!-- Animated Avatar Container -->
+        <div class="relative w-44 h-44 bg-gradient-to-tr from-[#FFECB3] to-[#FFF9C4] rounded-full flex items-center justify-center border-4 border-[#FFD54F] shadow-inner animate-pulse-slow">
+          <!-- Cute Custom 3D-like Pupil School SVG Character -->
+          <svg class="w-32 h-32 text-gray-700" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Back Hair -->
+            <path d="M15 45C15 25 35 15 50 15C65 15 85 25 85 45V60H15V45Z" fill="#422C24"/>
+            <!-- Face -->
+            <rect x="25" y="32" width="50" height="40" rx="20" fill="#FFD2B3"/>
+            <!-- Hair bangs -->
+            <path d="M22 35C28 25 45 28 50 32C55 28 72 25 78 35C82 25 82 15 50 15C18 15 18 25 22 35Z" fill="#422C24"/>
+            <!-- Eyes with shiny stars -->
+            <circle cx="40" cy="48" r="5" fill="#2D1E18"/>
+            <circle cx="60" cy="48" r="5" fill="#2D1E18"/>
+            <circle cx="42" cy="46" r="1.5" fill="white"/>
+            <circle cx="62" cy="46" r="1.5" fill="white"/>
+            <!-- Rosy Cheeks -->
+            <circle cx="33" cy="54" r="4" fill="#FF8A80" opacity="0.6"/>
+            <circle cx="67" cy="54" r="4" fill="#FF8A80" opacity="0.6"/>
+            <!-- Happy Mouth -->
+            <path d="M44 58C44 61.3137 46.6863 64 50 64C53.3137 64 56 61.3137 56 58H44Z" fill="#D32F2F"/>
+            <!-- Cute Blue Cap -->
+            <path d="M28 26C40 18 60 18 72 26L74 22C60 14 40 14 26 22L28 26Z" fill="#42A5F5"/>
+            <!-- Collar & Shirt -->
+            <path d="M35 72L50 82L65 72H35Z" fill="#1565C0"/>
+            <path d="M45 72L50 78L55 72H45Z" fill="#FFD2B3"/>
+            <path d="M25 72H75L70 82H30L25 72Z" fill="#90CAF9"/>
+          </svg>
+          <span class="absolute -top-1 -right-1 text-3xl animate-bounce" style="animation-duration: 2s;">⭐</span>
+          <span class="absolute -bottom-2 -left-1 text-3xl animate-float">🏫</span>
+        </div>
+
+        <div class="text-gray-600 font-medium px-4 max-w-md">
+          Mari bantu warga sekolah kita dengan memilih jawapan moral yang paling tepat! Bersedia untuk menjadi hero yang disenangi?
+        </div>
+
+        <!-- Play Button -->
+        <button id="btn-start" class="group relative px-10 py-5 bg-gradient-to-r from-[#FF7043] to-[#FF8A65] text-white font-playful font-bold text-2xl rounded-2xl shadow-lg border-b-8 border-[#D84315] hover:brightness-105 active:scale-95 transition-all w-64">
+          MULA KUIZ!
+          <span class="absolute -top-3 -right-3 text-2xl group-hover:rotate-12 transition-transform">🚀</span>
+        </button>
+      </div>
+
+      <!-- 2. QUESTION SLIDE -->
+      <div id="slide-question" class="hidden w-full flex-col space-y-6">
+        <!-- Question Badge / Topic Info -->
+        <div class="flex items-center justify-between text-sm">
+          <span class="bg-[#E3F2FD] text-[#1565C0] px-3 py-1 rounded-full font-bold border border-[#90CAF9] flex items-center gap-1">
+            <span>🎁</span> Bantuan Kepada Warga Sekolah
+          </span>
+          <span class="text-gray-500 font-semibold" id="question-index-tag">Slaid 1/5</span>
+        </div>
+
+        <!-- Question Title Area -->
+        <div class="bg-gradient-to-br from-[#FFF9C4] to-[#FFF59D] rounded-2xl p-5 border-2 border-[#FFF176] shadow-md flex items-start gap-4">
+          <span class="text-4xl id-icon" id="question-icon">📚</span>
+          <div class="space-y-1">
+            <h2 id="question-text" class="text-xl md:text-2xl font-bold text-gray-800 font-playful leading-relaxed">
+              Cikgu membawa banyak buku ke kelas. Apakah tindakan yang patut kamu lakukan?
+            </h2>
+          </div>
+        </div>
+
+        <!-- 3 Options Container (A, B, C) -->
+        <div class="grid grid-cols-1 gap-3 w-full" id="options-container">
+          <!-- Option A -->
+          <button onclick="selectOption('A')" class="option-btn group w-full bg-white hover:bg-sky-50 active:scale-[0.99] border-3 border-gray-200 hover:border-[#4A90E2] p-4 rounded-xl flex items-center text-left transition-all duration-200 shadow-sm relative">
+            <span class="w-10 h-10 shrink-0 bg-[#E3F2FD] text-[#1976D2] font-playful font-black text-xl rounded-lg flex items-center justify-center border-2 border-[#90CAF9] mr-4 group-hover:bg-[#1976D2] group-hover:text-white transition-colors">
+              A
+            </span>
+            <span class="option-text text-lg font-bold text-gray-700">Pilihan Jawapan Pertama</span>
+          </button>
+          
+          <!-- Option B -->
+          <button onclick="selectOption('B')" class="option-btn group w-full bg-white hover:bg-sky-50 active:scale-[0.99] border-3 border-gray-200 hover:border-[#4A90E2] p-4 rounded-xl flex items-center text-left transition-all duration-200 shadow-sm relative">
+            <span class="w-10 h-10 shrink-0 bg-[#FFF3E0] text-[#E65100] font-playful font-black text-xl rounded-lg flex items-center justify-center border-2 border-[#FFE0B2] mr-4 group-hover:bg-[#E65100] group-hover:text-white transition-colors">
+              B
+            </span>
+            <span class="option-text text-lg font-bold text-gray-700">Pilihan Jawapan Kedua</span>
+          </button>
+
+          <!-- Option C -->
+          <button onclick="selectOption('C')" class="option-btn group w-full bg-white hover:bg-sky-50 active:scale-[0.99] border-3 border-gray-200 hover:border-[#4A90E2] p-4 rounded-xl flex items-center text-left transition-all duration-200 shadow-sm relative">
+            <span class="w-10 h-10 shrink-0 bg-[#E8F5E9] text-[#2E7D32] font-playful font-black text-xl rounded-lg flex items-center justify-center border-2 border-[#C8E6C9] mr-4 group-hover:bg-[#2E7D32] group-hover:text-white transition-colors">
+              C
+            </span>
+            <span class="option-text text-lg font-bold text-gray-700">Pilihan Jawapan Ketiga</span>
+          </button>
+        </div>
+
+        <!-- Next / Feedback Overlay Frame -->
+        <div id="feedback-frame" class="hidden transform transition-all duration-300 scale-95 opacity-0 bg-white border-2 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <span id="feedback-icon" class="text-4xl animate-bounce">⭐</span>
+            <div class="text-center sm:text-left">
+              <div id="feedback-status" class="text-xl font-black font-playful">SYABAS!</div>
+              <div id="feedback-msg" class="text-gray-600 font-semibold text-sm">Maklum balas jawapan akan dipaparkan di sini.</div>
+            </div>
+          </div>
+          <button id="btn-next" class="px-6 py-3 bg-[#4CAF50] text-white font-playful font-bold rounded-xl border-b-4 border-[#388E3C] shadow hover:brightness-105 active:scale-95 transition-all whitespace-nowrap w-full sm:w-auto">
+            TERUSKAN Seterusnya ➔
+          </button>
+        </div>
+
+      </div>
+
+      <!-- 3. OUTRO / SUCCESS SLIDE -->
+      <div id="slide-outro" class="hidden flex flex-col items-center text-center py-4 w-full space-y-6">
+        <!-- Title Header -->
+        <div class="space-y-1">
+          <h1 class="text-3xl md:text-4xl font-playful font-black text-[#4CAF50] tracking-wide animate-bounce">
+            🏆 TAHNIAH!
+          </h1>
+          <p class="text-lg font-bold text-gray-600">Anda telah menamatkan Cabaran Hero Baik Hati.</p>
+        </div>
+
+        <!-- Trophy Visual Area -->
+        <div class="relative py-4 flex justify-center items-center">
+          <!-- Shiny Sunbeam behind -->
+          <div class="absolute w-52 h-52 bg-yellow-200/50 rounded-full animate-spin-slow filter blur-xl"></div>
+          
+          <div class="relative bg-gradient-to-tr from-[#FFF9C4] to-[#FFFDE7] p-8 rounded-full border-4 border-yellow-400 shadow-xl z-10 animate-float">
+            <!-- Svg Trophy Cup -->
+            <svg class="w-28 h-28 text-yellow-500" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 20H85V45C85 62.3 71.3 76.5 54 77.9V88H70V94H30V88H46V77.9C28.7 76.5 15 62.3 15 45V20Z" fill="#FFD54F"/>
+              <path d="M25 20H75V45C75 58.8 63.8 70 50 70C36.2 70 25 58.8 25 45V20Z" fill="#FFCA28"/>
+              <path d="M15 28H5C2.24 28 0 30.24 0 33V45C0 51.08 4.42 56.12 10.2 57.18C12.3 50.1 14.36 41.24 15 28Z" fill="#FFCA28"/>
+              <path d="M85 28H95C97.76 28 100 30.24 100 33V45C100 51.08 95.58 56.12 89.8 57.18C87.7 50.1 85.64 41.24 85 28Z" fill="#FFB300"/>
+              <!-- Star on Trophy -->
+              <polygon points="50,30 53,38 61,38 55,43 57,51 50,46 43,51 45,43 39,38 47,38" fill="#F57C00"/>
+            </svg>
+            <span class="absolute top-2 left-2 text-3xl animate-bounce" style="animation-delay:0.3s">⭐</span>
+            <span class="absolute top-2 right-2 text-3xl animate-bounce" style="animation-delay:0.8s">⭐</span>
+            <span class="absolute -bottom-1 left-6 text-3xl animate-bounce" style="animation-delay:1.2s">✨</span>
+          </div>
+        </div>
+
+        <!-- Badges Earned -->
+        <div class="flex flex-wrap justify-center gap-3 max-w-md">
+          <span class="bg-pink-100 text-pink-700 px-4 py-2 rounded-2xl font-black border-2 border-pink-300 text-sm flex items-center gap-1.5 shadow-sm transform hover:scale-105 transition-transform">
+            💖 Baik Hati
+          </span>
+          <span class="bg-blue-100 text-blue-700 px-4 py-2 rounded-2xl font-black border-2 border-blue-300 text-sm flex items-center gap-1.5 shadow-sm transform hover:scale-105 transition-transform">
+            🏫 Warga Sekolah
+          </span>
+          <span class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-2xl font-black border-2 border-yellow-300 text-sm flex items-center gap-1.5 shadow-sm transform hover:scale-105 transition-transform">
+            🦸‍♂️ Hero Baik Hati
+          </span>
+        </div>
+
+        <!-- Highscore & Restart Area -->
+        <div class="bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl p-4 w-full max-w-sm flex justify-between items-center">
+          <div class="text-left">
+            <div class="text-xs text-gray-400 font-bold uppercase">MARKAH AKHIR</div>
+            <div class="text-2xl font-black font-playful text-[#FF6F61]"><span id="final-score">0</span> / 500</div>
+          </div>
+          <button id="btn-restart" class="px-5 py-3 bg-[#03A9F4] text-white font-playful font-bold rounded-xl border-b-4 border-[#0288D1] shadow hover:brightness-105 active:scale-95 transition-all">
+            Main Semula 🔄
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Interactive Confetti Particles Canvas -->
+  <div id="confetti-holder" class="absolute inset-0 pointer-events-none z-0"></div>
+
+  <!-- Audio Context and Game Logic -->
+  <script>
+    // Sound Effects Synthesizer using Web Audio API (No External Dependencies)
+    class SoundEffects {
+      constructor() {
+        this.ctx = null;
+      }
+      init() {
+        if (!this.ctx) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      }
+      playCorrect() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        
+        // Melodic upbeat chord (C-maj to G-maj feel)
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+          
+          gain.gain.setValueAtTime(0.15, now + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.08 + 0.3);
+          
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.35);
+        });
+      }
+      playWrong() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        
+        // Gentle downward slide
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(110, now + 0.25);
+        
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+        
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+      }
+      playClick() {
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, now);
+        osc.frequency.exponentialRampToValueAtTime(400, now + 0.05);
+        
+        gain.gain.setValueAtTime(0.05, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+        
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.06);
+      }
+    }
+
+    const sfx = new SoundEffects();
+
+    // Game Database (Based on requested details)
+    const questions = [
+      {
+        icon: "📚",
+        text: "Cikgu membawa banyak buku ke kelas. Apakah tindakan yang patut kamu lakukan?",
+        options: {
+          A: "Membantu cikgu membawa buku",
+          B: "Bermain dengan rakan",
+          C: "Berlari ke kantin"
+        },
+        answer: "A",
+        feedback: "⭐ Syabas! Membantu cikgu ialah amalan baik hati."
+      },
+      {
+        icon: "✏️",
+        text: "Sofia terjatuh pensel di dalam kelas. Apakah tindakan yang patut kamu lakukan?",
+        options: {
+          A: "Ketawa melihat Sofia",
+          B: "Membantu Sofia mengutip pensel",
+          C: "Membiarkan sahaja"
+        },
+        answer: "B",
+        feedback: "⭐ Syabas! Membantu rakan ialah amalan mulia."
+      },
+      {
+        icon: "🧹",
+        text: "Kawasan sekolah kelihatan kotor. Apakah tindakan yang terbaik?",
+        options: {
+          A: "Menyepahkan lagi kawasan sekolah",
+          B: "Membiarkan sahaja",
+          C: "Mengutip sampah dan membuangnya ke dalam tong sampah"
+        },
+        answer: "C",
+        feedback: "⭐ Syabas! Menjaga kebersihan membantu warga sekolah."
+      },
+      {
+        icon: "🪑",
+        text: "Selepas perhimpunan, banyak kerusi belum disusun. Apakah tindakan yang patut kamu lakukan?",
+        options: {
+          A: "Membantu pengawas menyusun kerusi",
+          B: "Terus bermain",
+          C: "Menyuruh orang lain membuat kerja"
+        },
+        answer: "A",
+        feedback: "⭐ Syabas! Sikap membantu menjadikan sekolah lebih teratur."
+      },
+      {
+        icon: "😊",
+        text: "Apakah perasaan kamu selepas membantu warga sekolah?",
+        options: {
+          A: "Marah",
+          B: "Gembira dan bangga",
+          C: "Bosan"
+        },
+        answer: "B",
+        feedback: "⭐ Syabas! Membantu orang lain memberikan perasaan yang positif."
+      }
+    ];
+
+    // State Variables
+    let currentQuestionIdx = 0;
+    let score = 0;
+    let hasAnswered = false;
+
+    // DOM Elements
+    const gameCard = document.getElementById('game-card');
+    const header = document.getElementById('game-header');
+    const slideIntro = document.getElementById('slide-intro');
+    const slideQuestion = document.getElementById('slide-question');
+    const slideOutro = document.getElementById('slide-outro');
+    
+    const btnStart = document.getElementById('btn-start');
+    const btnNext = document.getElementById('btn-next');
+    const btnRestart = document.getElementById('btn-restart');
+    
+    const curQuestionNum = document.getElementById('current-question-num');
+    const scoreCounter = document.getElementById('score-counter');
+    const progressBarFill = document.getElementById('progress-bar-fill');
+    
+    const qIcon = document.getElementById('question-icon');
+    const qText = document.getElementById('question-text');
+    const qIndexTag = document.getElementById('question-index-tag');
+    
+    const optionButtons = document.querySelectorAll('.option-btn');
+    const feedbackFrame = document.getElementById('feedback-frame');
+    const feedbackIcon = document.getElementById('feedback-icon');
+    const feedbackStatus = document.getElementById('feedback-status');
+    const feedbackMsg = document.getElementById('feedback-msg');
+    
+    const finalScore = document.getElementById('final-score');
+    const confettiHolder = document.getElementById('confetti-holder');
+
+    // Start Button Event
+    btnStart.addEventListener('click', () => {
+      sfx.playClick();
+      startGame();
+    });
+
+    // Next Button Event
+    btnNext.addEventListener('click', () => {
+      sfx.playClick();
+      nextQuestion();
+    });
+
+    // Restart Button Event
+    btnRestart.addEventListener('click', () => {
+      sfx.playClick();
+      resetGame();
+    });
+
+    function startGame() {
+      // Transition elements
+      slideIntro.classList.add('hidden');
+      header.classList.remove('hidden');
+      slideQuestion.classList.remove('hidden');
+      
+      currentQuestionIdx = 0;
+      score = 0;
+      updateScoreUI();
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      hasAnswered = false;
+      const q = questions[currentQuestionIdx];
+      
+      // Update info header
+      curQuestionNum.innerText = currentQuestionIdx + 1;
+      qIndexTag.innerText = `Slaid ${currentQuestionIdx + 1} / 5`;
+      
+      // Update Progress Bar
+      const progressPercent = ((currentQuestionIdx + 1) / questions.length) * 100;
+      progressBarFill.style.width = `${progressPercent}%`;
+
+      // Set question text & icon
+      qIcon.innerText = q.icon;
+      qText.innerText = q.text;
+
+      // Reset feedback frame & hide
+      feedbackFrame.classList.add('hidden');
+      feedbackFrame.classList.remove('scale-100', 'opacity-100', 'bg-emerald-50', 'border-emerald-200', 'bg-rose-50', 'border-rose-200');
+      feedbackFrame.classList.add('scale-95', 'opacity-0');
+
+      // Populate & style options
+      optionButtons.forEach(btn => {
+        const optionLetter = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
+        const textSpan = btn.querySelector('.option-text');
+        textSpan.innerText = q.options[optionLetter];
+        
+        // Reset option styles to fresh state
+        btn.disabled = false;
+        btn.className = "option-btn group w-full bg-white hover:bg-sky-50 active:scale-[0.99] border-3 border-gray-200 hover:border-sky-400 p-4 rounded-xl flex items-center text-left transition-all duration-200 shadow-sm relative";
+        
+        // Ensure default styling for indicator badges
+        const badge = btn.querySelector('span:first-child');
+        badge.className = `w-10 h-10 shrink-0 font-playful font-black text-xl rounded-lg flex items-center justify-center border-2 mr-4 transition-colors ${
+          optionLetter === 'A' ? 'bg-[#E3F2FD] text-[#1976D2] border-[#90CAF9]' :
+          optionLetter === 'B' ? 'bg-[#FFF3E0] text-[#E65100] border-[#FFE0B2]' :
+                                 'bg-[#E8F5E9] text-[#2E7D32] border-[#C8E6C9]'
+        }`;
+      });
+    }
+
+    function selectOption(selectedLetter) {
+      if (hasAnswered) return;
+      hasAnswered = true;
+
+      const q = questions[currentQuestionIdx];
+      const isCorrect = (selectedLetter === q.answer);
+
+      // Disable all buttons and show feedback styles
+      optionButtons.forEach(btn => {
+        btn.disabled = true;
+        const optionLetter = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
+        
+        if (optionLetter === q.answer) {
+          // Highlight correct answer in green
+          btn.className = "option-btn group w-full bg-emerald-50 border-3 border-emerald-400 p-4 rounded-xl flex items-center text-left transition-all shadow-sm relative";
+          const badge = btn.querySelector('span:first-child');
+          badge.className = "w-10 h-10 shrink-0 bg-emerald-500 text-white font-playful font-black text-xl rounded-lg flex items-center justify-center border-2 border-emerald-600 mr-4";
+        } else if (optionLetter === selectedLetter && !isCorrect) {
+          // Highlight wrong picked answer in red
+          btn.className = "option-btn group w-full bg-rose-50 border-3 border-rose-300 p-4 rounded-xl flex items-center text-left transition-all shadow-sm relative";
+          const badge = btn.querySelector('span:first-child');
+          badge.className = "w-10 h-10 shrink-0 bg-rose-500 text-white font-playful font-black text-xl rounded-lg flex items-center justify-center border-2 border-rose-600 mr-4";
+        } else {
+          // Gray out unselected wrong options
+          btn.className = "option-btn group w-full bg-gray-50 border-3 border-gray-100 p-4 rounded-xl flex items-center text-left transition-all opacity-60";
+        }
+      });
+
+      // Show Feedback Card
+      feedbackFrame.classList.remove('hidden');
+      setTimeout(() => {
+        feedbackFrame.classList.remove('scale-95', 'opacity-0');
+        feedbackFrame.classList.add('scale-100', 'opacity-100');
+      }, 50);
+
+      if (isCorrect) {
+        score += 100;
+        updateScoreUI();
+        sfx.playCorrect();
+        createConfetti();
+
+        // Style Feedback as Success
+        feedbackFrame.classList.add('bg-emerald-50', 'border-emerald-300');
+        feedbackIcon.innerText = "⭐";
+        feedbackStatus.innerText = "Syabas!";
+        feedbackStatus.className = "text-xl font-black font-playful text-[#2E7D32]";
+        feedbackMsg.innerText = q.feedback.replace("⭐ Syabas! ", "");
+      } else {
+        sfx.playWrong();
+        // Style Feedback as Corrected / Retry
+        feedbackFrame.classList.add('bg-amber-50', 'border-amber-300');
+        feedbackIcon.innerText = "💡";
+        feedbackStatus.innerText = "Cuba Lagi!";
+        feedbackStatus.className = "text-xl font-black font-playful text-[#D84315]";
+        feedbackMsg.innerText = `Jawapan yang betul ialah: ${q.options[q.answer]}`;
+      }
+    }
+
+    function nextQuestion() {
+      currentQuestionIdx++;
+      if (currentQuestionIdx < questions.length) {
+        loadQuestion();
+      } else {
+        showOutro();
+      }
+    }
+
+    function showOutro() {
+      slideQuestion.classList.add('hidden');
+      header.classList.add('hidden');
+      slideOutro.classList.remove('hidden');
+      
+      finalScore.innerText = score;
+      // Trigger festive celebration confetti
+      for (let i = 0; i < 4; i++) {
+        setTimeout(createConfetti, i * 400);
+      }
+    }
+
+    function resetGame() {
+      slideOutro.classList.add('hidden');
+      slideIntro.classList.remove('hidden');
+    }
+
+    function updateScoreUI() {
+      // Pad score with leading zeros
+      scoreCounter.innerText = String(score).padStart(2, '0');
+    }
+
+    // Party Confetti Maker
+    function createConfetti() {
+      const colors = ['#FF8A80', '#FFD54F', '#4FC3F7', '#81C784', '#BA68C8'];
+      for (let i = 0; i < 40; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('confetti');
+        
+        // Randomized positions and movements
+        const startX = Math.random() * window.innerWidth;
+        const startY = window.innerHeight + 10;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        particle.style.left = `${startX}px`;
+        particle.style.top = `${startY}px`;
+        particle.style.backgroundColor = color;
+        particle.style.transform = `scale(${Math.random() * 0.8 + 0.4})`;
+        
+        confettiHolder.appendChild(particle);
+
+        const destX = startX + (Math.random() - 0.5) * 300;
+        const destY = Math.random() * (window.innerHeight * 0.6);
+        
+        const animation = particle.animate([
+          { transform: `translate(0, 0) rotate(0deg)`, opacity: 1 },
+          { transform: `translate(${destX - startX}px, ${destY - startY}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+        ], {
+          duration: 1500 + Math.random() * 1000,
+          easing: 'ease-out'
+        });
+
+        animation.onfinish = () => particle.remove();
+      }
+    }
+  </script>
+</body>
+</html>
